@@ -158,18 +158,23 @@ void keyPressed(){
   if(currentScreen == level1Grid){
 
     //set [W] key to move the player1 up & avoid Out-of-Bounds errors
-    if(keyCode == 87){
+    if(keyCode == 87 && player1Row != 0 ){
     
       //Store old GridLocation
       GridLocation oldLoc = new GridLocation(player1Row, player1Col);
-      
-      //Erase image from previous location
-      
-
+  
       //change the field for player1Row
       player1Row--;
     }
-
+    //set [S] key to move the player1 up & avoid Out-of-Bounds errors
+    if(keyCode == 83  && player1Row != level1Grid.getNumRows()-1 ){
+    
+      //Store old GridLocation
+      GridLocation oldLoc = new GridLocation(player1Row, player1Col);
+  
+      //change the field for player1Row
+      player1Row++;
+    }
 
 
   }
@@ -349,7 +354,7 @@ if(level1Grid.getTileImage(loc) == enemy    ){
 
 }
 
-
+}
 
 //Method to check if there is a collision between Sprites on the Screen
 public boolean checkCollision(GridLocation loc, GridLocation nextLoc){
@@ -391,3 +396,4 @@ public void endGame(){
     currentScreen = endScreen;
 
 }
+
