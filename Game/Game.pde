@@ -70,9 +70,9 @@ void setup() {
 
   //setup the sprites  
   player1 = loadImage(player1File);
-  player1.resize(mainGrid.getTileWidthPixels(),mainGrid.getTileHeightPixels());
-  // enemy = loadImage("images/zombie.png");
-  // enemy.resize(100,100);
+  //player1.resize(mainGrid.getTileWidthPixels(),mainGrid.getTileHeightPixels());
+   enemy = loadImage("images/zombie.png");
+  enemy.resize(100,100);
   exampleAnimationSetup();
 
   //Adding pixel-based Sprites to the world
@@ -220,7 +220,7 @@ public void populateSprites(){
   int lastCol = level1Grid.getNumCols() -1;
 
   //Loop through all the rows in the last column
-for(int r = 0; r<level1Grid.lastNumRows(); i++;){
+for(int r = 0; r<level1Grid.lastNumRows(); i++){
 
   GridLocation loc = new GridLocation(r,lastCol);
     //Generate a random number
@@ -228,19 +228,18 @@ double rando = Math.random();
 
     //10% of the time, decide to add an enemy image to a Tile
     if(rando< 0.1){
-      level1Grid.setTileImage(loc, enemy)
+      level1Grid.setTileImage(loc, enemy);
     }
 
 }
 }
 //Method to move around the enemies/sprites on the screen
-public void moveSprites()
+public void moveSprites(){
 for(int r=0; r <level1Grid.getNumRows();r++){
-  for(int c = 0; c<level1Grid.getNumCols();c++;){
+
+  for(int c = 0; c<level1Grid.getNumCols();c++){
     GridLocation loc = new GridLocation(r,c);
 
-  }
-}
 //Loop through all of the rows & cols in the grid
 
       //Store the current GridLocation
@@ -271,7 +270,11 @@ if(level1Grid.getTileImage() == enemy    ){
           
       //CASE 3: Enemy leaves screen at first column
 
+  }
 }
+}
+
+
 
 //Method to check if there is a collision between Sprites on the Screen
 public boolean checkCollision(GridLocation loc, GridLocation nextLoc){
