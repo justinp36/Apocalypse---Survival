@@ -1,28 +1,45 @@
 /* Sprite class - to create objects that move around with their own properties
  * Inspired by Daniel Shiffman's p5js Animated Sprite tutorial
+ * Note: Picture coordinate origina at top, left corner
  * Author: Joel Bianchi
- * Last Edit: 6/5/23
- * Modified to account for picture coordinates at Top, Left corner
- * Added Constructor #3
- * spriteImgPath renamed to spriteImgFile
- * variable renaming
- * sprite copying
+ * Last Edit: 5/28/2024
+ * Added Sprite constructor with scaling
+ * Updated for null images (ie. Buttons)
+ * getX() & getY() center Sprites
  */
 
 public class Sprite {
   
-    PImage spriteImg;
-    private String spriteImgFile;
-    private float centerX;
-    private float centerY;
-    private float speedX;
-    private float speedY;
-    private float w;
-    private float h;
-    private boolean isAnimated;
+  //------------------ SPRITE FIELDS --------------------//
+  PImage spriteImg;
+  private String spriteImgFile;
+  private float centerX;
+  private float centerY;
+  private float speedX;
+  private float speedY;
+  private float w;
+  private float h;
+  private boolean isAnimated;
 
 
-  // Sprite Constructor #1
+  //------------------ SPRITE CONSTRUCTORS --------------------//
+
+  // Sprite Constructor #1: Only pass in the image file (Non-animated)
+  public Sprite(String spriteImgFile){
+    this(spriteImgFile, 1.0, 0.0, 0.0, false);
+  }
+
+  // Sprite Constructor #2: Only pass in the image file that can be scaled (Non-animated)
+  public Sprite(String spriteImgFile, float scale){
+    this(spriteImgFile, scale, 0.0, 0.0, false);
+  }
+
+  // Sprite Constructor #3: for Non-Animated Sprite
+  public Sprite(String spriteImgFile, float scale, float x, float y) {
+    this(spriteImgFile, scale, x, y, false);
+  }
+
+  // Sprite Constructor #4: for ANY Sprite
   public Sprite(String spriteImgFile, float scale, float x, float y, boolean isAnimated) {
     this.spriteImgFile = spriteImgFile;
     setLeft(x);
@@ -31,22 +48,19 @@ public class Sprite {
     this.speedY = 0;
     this.isAnimated = isAnimated;
     if(!isAnimated){
-      this.spriteImg = loadImage(spriteImgFile);
-      w = spriteImg.width * scale;
-      h = spriteImg.height * scale;
+      if( spriteImgFile != null){
+        this.spriteImg = loadImage(spriteImgFile);
+        w = spriteImg.width * scale;
+        h = spriteImg.height * scale;
+      } else{
+        
+      }
+
     }
   }
 
-  // Sprite Constructor #2: for Non-Animated Sprite
-  public Sprite(String spriteImgFile, float x, float y) {
-    this(spriteImgFile, 1.0, x, y, false);
-  }
 
-  // Sprite Constructor #3: Only pass in the image
-  public Sprite(String spriteImgFile){
-    this(spriteImgFile, 0.0, 0.0);
-  }
-
+  //------------------ SPRITE MOTION METHODS --------------------//
 
   // method to display the Sprite image on the screen
   public void show() {
@@ -73,16 +87,6 @@ public class Sprite {
   }
 
 
-  // method that automatically moves the Sprite based on its velocity
-  public void update(){
-    move(speedX, speedY);
-  }
-  public void update(float deltaTime){
-    speedX += deltaTime/1000;
-    speedY += deltaTime/1000;
-    move(speedX, speedY);
-  }
-
   // method to rotate Sprite image on the screen
   public void rotate(float degrees){
     float rads = radians(degrees);
@@ -91,7 +95,8 @@ public class Sprite {
   }
 
 
-  /*-- ACCESSOR METHODS --*/
+
+  //------------------ SPRITE ACCESSOR METHODS --------------------//
 
   public float getW(){
     return w;
@@ -105,6 +110,12 @@ public class Sprite {
   public float getCenterY(){
     return centerY;
   }
+  public float getX(){
+    return getCenterX();
+  }
+  public float getY(){
+    return getCenterY();
+  }
   public PImage getImg(){
     return spriteImg;
   }
@@ -113,7 +124,8 @@ public class Sprite {
   }
   
   
-  /*-- MUTATOR METHODS --*/
+  //------------------ SPRITE MUTATOR METHODS --------------------//
+
   public void setW(float w){
     this.w = w;
   }
@@ -134,10 +146,10 @@ public class Sprite {
   }
 
 
-  /*-- SPRITE BOUNDARY METHODS --
-    -- Used from Long Bao Nguyen
-    -- https://longbaonguyen.github.io/courses/platformer/platformer.html
-  */
+  /*------------------ SPRITE BOUNDARY METHODS  --------------------
+   * -- Used from Long Bao Nguyen
+   *  -- https://longbaonguyen.github.io/courses/platformer/platformer.html
+   */
   void setLeft(float left){
     centerX = left + w/2;
   }
@@ -194,6 +206,23 @@ public class Sprite {
     return sp;
 
   }
+
+  public void resize(int width, int height){
+    spriteImg.resize(width, height);
+  }
+
+
+  // method that automatically moves the Sprite based on its velocity
+  public void update(){
+    move(speedX, speedY);
+  }
+
+  public void update(float deltaTime){
+    speedX += deltaTime/1000;
+    speedY += deltaTime/1000;
+    move(speedX, speedY);
+  }
+
   //Method to copy a Sprite to same location
   public Sprite copy(){
     return copyTo(this.centerX, this.centerY);
@@ -210,5 +239,6 @@ public class Sprite {
   public String toString(){
     return spriteImgFile + "\t" + getLeft() + "\t" + getTop() + "\t" + speedX + "\t" + speedY + "\t" + w + "\t" + h + "\t" + isAnimated;
   }
+
 
 }
