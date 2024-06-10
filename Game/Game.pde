@@ -1,9 +1,10 @@
 /* Game Class Starter File
  * Authors: Justin Palaguachi, Lucio Rodriguez
- * Last Edit: 5/13/2024
+ * Last Edit: 6/6/2024
  */
 
 //import processing.sound.*;
+
 
 //------------------ GAME VARIABLES --------------------//
 
@@ -11,26 +12,22 @@
 String titleText = "Apocalypse Surival";
 String extraText = "CurrentLevel?";
 
-//VARIABLES: Whole Game
-AnimatedSprite runningHorse;
-boolean doAnimation;
-
 //VARIABLES: Splash Screen
 Screen splashScreen;
 PImage splashBg;
 String splashBgFile = "images/apcsa.png";
 //SoundFile song;
 
+//VARIABLES: Level1Grid Screen
+Grid level1Grid;
+PImage level1Bg;
+String level1BgFile = "images/rundowncity.png";
 PImage player1;
 String player1File = "images/Hero.png";
 int player1Row = 3;
 int player1Col = 0;
 int health = 3;
-Grid level1Grid;
-String level1BgFile = "images/rundowncity.png";
-PImage level1Bg;
 PImage enemy;
-
 
 AnimatedSprite walkingChick;
 Button b1 = new Button("rect", 650, 525, 100, 50, "GoToLevel2");
@@ -44,11 +41,14 @@ String player2File = "images/zapdos.png";
 int player2startX = 50;
 int player2startY = 300;
 
+//VARIABLES: Whole Game
+AnimatedSprite runningHorse;
+boolean doAnimation;
+
 //VARIABLES: EndScreen
 World endScreen;
 PImage endBg;
 String endBgFile = "images/youwin.png";
-
 
 //VARIABLES: Tracking the current Screen being displayed
 Screen currentScreen;
@@ -82,25 +82,24 @@ void setup() {
 
   //SETUP: Screens, Worlds, Grids
   splashScreen = new Screen("splash", splashBg);
-  level1Grid = new Grid("chessBoard", level1Bg, 6, 8);
+  level1Grid = new Grid("city", level1Bg, 6, 8);
   //level1Grid.startPrintingGridMarks();
-  level2World = new World("sky", level2BgFile, 8.0, 0, 0); //moveable World constructor --> defines center & scale (x, scale, y)???
+  level2World = new World("city2", level2BgFile, 8.0, 0, 0); //moveable World constructor --> defines center & scale (x, scale, y)???
   //level2World = new World("sky", level2Bg);   //non-moving World construtor
   endScreen = new World("end", endBg);
   currentScreen = splashScreen;
 
   //SETUP: All Game objects
   runningHorse = new AnimatedSprite("sprites/horse_run.png", "sprites/horse_run.json", 50.0, 75.0, 10.0);
+  
 
   //SETUP: Level 1
   player1 = loadImage(player1File);
   player1.resize(level1Grid.getTileWidth(),level1Grid.getTileHeight());
+  enemy = loadImage("images/zombie.png");
+  enemy.resize(100,100);
   walkingChick = new AnimatedSprite("sprites/chick_walk.png", "sprites/chick_walk.json", 0.0, 0.0, 5.0);
   level1Grid.setTileSprite(new GridLocation (5,5), walkingChick);
-
-
-     enemy = loadImage("images/zombie.png");
-  enemy.resize(100,100);
   System.out.println("Done loading Level 1 ...");
   
   //SETUP: Level 2
@@ -175,25 +174,9 @@ void keyPressed(){
       //change the field for player1Row
       player1Row++;
     }
-    if(keyCode == 68  && player1Col != level1Grid.getNumCols()-1 ){ 
-     
-      GridLocation oldLoc = new GridLocation(player1Row, player1Col);
-  
-      //change the field for player1Row
-      player1Col++;
-    }
-//{A} Button
-  if(keyCode == 65 && player1Col != 0 ){
-    
-      //Store old GridLocation
-      GridLocation oldLoc = new GridLocation(player1Row, player1Col);
-  
-      //change the field for player1Row
-      player1Col--;
-    }
-   
-
   }
+
+  
 
   //CHANGING SCREENS BASED ON KEYS
   //change to level1 if 1 key pressed, level2 if 2 key is pressed
@@ -202,8 +185,10 @@ void keyPressed(){
   } else if(key == '2'){
     currentScreen = level2World;
   }
+} //closes keyPressed
 
-}
+
+
 
 
 //Known Processing method that automatically will run when a mouse click triggers it
@@ -316,60 +301,39 @@ public void populateSprites(){
   int lastCol = level1Grid.getNumCols() -1;
 
   //Loop through all the rows in the last column
-for(int r = 0; r<level1Grid.getNumRows(); r++){
+  for(int r = 0; r<level1Grid.getNumRows(); r++){
 
-  GridLocation loc = new GridLocation(r,lastCol);
+    GridLocation loc = new GridLocation(r,lastCol);
     //Generate a random number
-double rando = Math.random();
+    double rando = Math.random();
 
     //10% of the time, decide to add an enemy image to a Tile
     if(rando< 0.1){
       level1Grid.setTileImage(loc, enemy);
     }
 
-}
+  }
 }
 //Method to move around the enemies/sprites on the screen
 public void moveSprites(){
-for(int r=0; r <level1Grid.getNumRows();r++){
 
-  for(int c = 1; c<level1Grid.getNumCols();c++){
-    GridLocation loc = new GridLocation(r,c);
+  //move zombies left in the level1Grid
+  if(currentScreen == level1Grid){
+    //Loop through all of the rows & cols in the grid
+    for(int r=0; r <level1Grid.getNumRows();r++){
+      for(int c = 1; c<level1Grid.getNumCols();c++){
+        
+        GridLocation loc = new GridLocation(r,c);        //Store the current GridLocation
 
-//Loop through all of the rows & cols in the grid
-
-      //Store the current GridLocation
-if(level1Grid.getTileImage(loc) == enemy    ){
-  level1Grid.clearTileImage(loc);
-  GridLocation leftLoc = new GridLocation(r,c-1);
-  level1Grid.setTileImage(leftLoc, enemy);
-  System.out.println("moving bomb");
-}
-      //Store the next GridLocation
-
-      //Check if the current tile has an image that is not player1      
-
-
-        //Get image/sprite from current location
-          
-
-        //CASE 1: Collision with player1
-
-
-        //CASE 2: Move enemy over to new location
-
-
-        //Erase image/sprite from old location
-
-        //System.out.println(loc + " " + grid.hasTileImage(loc));
-
-          
-      //CASE 3: Enemy leaves screen at first column
-
+        if(level1Grid.getTileImage(loc) == enemy    ){
+          level1Grid.clearTileImage(loc);
+          GridLocation leftLoc = new GridLocation(r,c-1);  //Store the next GridLocation
+          level1Grid.setTileImage(leftLoc, enemy);
+          //System.out.println("moving zombie");
+        }
+      }
+    }
   }
-
-}
-
 }
 
 //Method to check if there is a collision between Sprites on the Screen
@@ -412,4 +376,3 @@ public void endGame(){
     currentScreen = endScreen;
 
 }
-
