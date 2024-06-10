@@ -8,7 +8,7 @@
 //------------------ GAME VARIABLES --------------------//
 
 //VARIABLES: Title Bar
-String titleText = "PeanutChessSkyHorse";
+String titleText = "Apocalypse Surival";
 String extraText = "CurrentLevel?";
 
 //VARIABLES: Whole Game
@@ -175,7 +175,23 @@ void keyPressed(){
       //change the field for player1Row
       player1Row++;
     }
-
+    if(keyCode == 68  && player1Col != level1Grid.getNumCols()-1 ){ 
+     
+      GridLocation oldLoc = new GridLocation(player1Row, player1Col);
+  
+      //change the field for player1Row
+      player1Col++;
+    }
+//{A} Button
+  if(keyCode == 65 && player1Col != 0 ){
+    
+      //Store old GridLocation
+      GridLocation oldLoc = new GridLocation(player1Row, player1Col);
+  
+      //change the field for player1Row
+      player1Col--;
+    }
+   
 
   }
 
@@ -187,8 +203,8 @@ void keyPressed(){
     currentScreen = level2World;
   }
 
-
 }
+
 
 //Known Processing method that automatically will run when a mouse click triggers it
 void mouseClicked(){
