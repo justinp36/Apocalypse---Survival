@@ -109,13 +109,16 @@ public class Grid extends World{
   //------------------ GRID ACCESSOR METHODS --------------------//
 
   //Method that returns the GridLocation of where the mouse is currently hovering over
-  public GridLocation getGridLocation(){
+  public GridLocation getMouseGridLocation(){
       
     int row = mouseY/(pixelHeight/this.rows);
     int col = mouseX/(pixelWidth/this.cols);
 
     return new GridLocation(row, col);
-  } 
+  }
+  public GridLocation getGridLocation(){
+    return getMouseGridLocation();
+  }
 
   //Accessor method that provide the x-pixel value given a GridLocation loc
   public int getX(GridLocation loc){

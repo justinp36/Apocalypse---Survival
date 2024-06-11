@@ -9,8 +9,8 @@
 //------------------ GAME VARIABLES --------------------//
 
 //VARIABLES: Title Bar
-String titleText = "Apocalypse Surival";
-String extraText = "CurrentLevel?";
+String titleText = "Zombie Survival";
+String extraText = "SURVIVE!!";
 
 //VARIABLES: Splash Screen
 Screen splashScreen;
@@ -28,22 +28,24 @@ int player1Row = 3;
 int player1Col = 0;
 int health = 3;
 PImage enemy;
+int zombieKill = 0;
 
-AnimatedSprite walkingChick;
-Button b1 = new Button("rect", 650, 525, 100, 50, "GoToLevel2");
+//AnimatedSprite walkingChick;
+
+// Button b1 = new Button("rect", 650, 525, 100, 50, "GoToLevel2");
 
 //VARIABLES: Level2World Pixel-based Screen
 World level2World;
 PImage level2Bg;
-String level2BgFile = "images/sky.jpg";
+String level2BgFile = "images/rundowncity.png";
 Sprite player2; //Use Sprite for a pixel-based Location
-String player2File = "images/zapdos.png";
+String player2File = "images/Hero.png";
 int player2startX = 50;
 int player2startY = 300;
 
 //VARIABLES: Whole Game
-AnimatedSprite runningHorse;
-boolean doAnimation;
+//AnimatedSprite runningHorse;
+//boolean doAnimation;
 
 //VARIABLES: EndScreen
 World endScreen;
@@ -84,13 +86,13 @@ void setup() {
   splashScreen = new Screen("splash", splashBg);
   level1Grid = new Grid("city", level1Bg, 6, 8);
   //level1Grid.startPrintingGridMarks();
-  level2World = new World("city2", level2BgFile, 8.0, 0, 0); //moveable World constructor --> defines center & scale (x, scale, y)???
+  //level2World = new World("city2", level2BgFile, 8.0, 0, 0); //moveable World constructor --> defines center & scale (x, scale, y)???
   //level2World = new World("sky", level2Bg);   //non-moving World construtor
   endScreen = new World("end", endBg);
   currentScreen = splashScreen;
 
   //SETUP: All Game objects
-  runningHorse = new AnimatedSprite("sprites/horse_run.png", "sprites/horse_run.json", 50.0, 75.0, 10.0);
+ // runningHorse = new AnimatedSprite("sprites/horse_run.png", "sprites/horse_run.json", 50.0, 75.0, 10.0);
   
 
   //SETUP: Level 1
@@ -98,16 +100,25 @@ void setup() {
   player1.resize(level1Grid.getTileWidth(),level1Grid.getTileHeight());
   enemy = loadImage("images/zombie.png");
   enemy.resize(100,100);
-  walkingChick = new AnimatedSprite("sprites/chick_walk.png", "sprites/chick_walk.json", 0.0, 0.0, 5.0);
-  level1Grid.setTileSprite(new GridLocation (5,5), walkingChick);
+ // walkingChick = new AnimatedSprite("sprites/chick_walk.png", "sprites/chick_walk.json", 0.0, 0.0, 5.0);
+  //level1Grid.setTileSprite(new GridLocation (5,5), walkingChick);
   System.out.println("Done loading Level 1 ...");
-  
+
   //SETUP: Level 2
-  player2 = new Sprite(player2File, 0.25);
+    //player2 = loadImage(player1File);
+    //player2.resize(level2World.getTileWidth(),level2World.getTileHeight());
+    // enemy = loadImage("images/zombie.png");
+    // enemy.resize(100,100);
+   // walkingChick = new AnimatedSprite("sprites/chick_walk.png", "sprites/chick_walk.json", 0.0, 0.0, 5.0);
+    //level1Grid.setTileSprite(new GridLocation (5,5), walkingChick);
+    //System.out.println("Done loading Level 2 ...");
+  
+  //SETUP: Level 2 World  
+  // player2 = new Sprite(player2File, 0.25);
   //player2.moveTo(player2startX, player2startY);
-  level2World.addSpriteCopyTo(runningHorse, 100, 200);  //example Sprite added to a World at a location, with a speed
-  level2World.printWorldSprites();
-  System.out.println("Done loading Level 2 ...");
+ // level2World.addSpriteCopyTo(runningHorse, 100, 200);  //example Sprite added to a World at a location, with a speed
+ // level2World.printWorldSprites();
+ // System.out.println("Done loading Level 2 ...");
   
   //SETUP: Sound
   // Load a soundfile from the /data folder of the sketch and play it back
@@ -173,10 +184,8 @@ void keyPressed(){
   
       //change the field for player1Row
       player1Row++;
-    }
-  }
-
-  
+    } 
+  }//close level1
 
   //CHANGING SCREENS BASED ON KEYS
   //change to level1 if 1 key pressed, level2 if 2 key is pressed
@@ -188,25 +197,29 @@ void keyPressed(){
 } //closes keyPressed
 
 
-
-
-
 //Known Processing method that automatically will run when a mouse click triggers it
 void mouseClicked(){
   
   //check if click was successful
   System.out.println("\nMouse was clicked at (" + mouseX + "," + mouseY + ")");
   if(currentGrid != null){
-    System.out.println("Grid location: " + currentGrid.getGridLocation());
+    System.out.println("Grid location: " + currentGrid.getMouseGridLocation());
   }
 
-  //what to do if clicked? (Make player1 jump back?)
+  //what to do if clicked? (get location of where mouse was clicked and see if there is an image of a zombie, erase it and add point to counter)
+  if (currentGrid == level1Grid)
+  {
+    GridLocation mouseLoc = level1Grid.getMouseGridLocation();
+    if(level1Grid.getTileImage(mouseLoc) == enemy)
+    {
+      level1Grid.clearTileImage(mouseLoc);
+      zombieKill += 1;
+    }
+  }
   
 
 
   //Toggle the animation on & off
-  doAnimation = !doAnimation;
-  System.out.println("doAnimation: " + doAnimation);
   if(currentGrid != null){
     currentGrid.setMark("X",currentGrid.getGridLocation());
   }
@@ -222,10 +235,10 @@ public void updateTitleBar(){
 
   if(!isGameOver()) {
     //set the title each loop
-    surface.setTitle(titleText + "    " + extraText + " " + health);
-
-    //adjust the extra text as desired
+    surface.setTitle(titleText + "    " + extraText + " " + zombieKill);
   
+  } else {
+    surface.setTitle(titleText + "    " + "GAME OVER! You Killed " + zombieKill + " zombies!" );
   }
 }
 
@@ -257,12 +270,12 @@ public void updateScreen(){
     level1Grid.showGridSprites();
     level1Grid.showWorldSprites();
 
-    //move to next level based on a button click
-    b1.show();
-    if(b1.isClicked()){
-      System.out.println("\nButton Clicked");
-      currentScreen = level2World;
-    }
+    // //move to next level based on a button click
+    // b1.show();
+    // if(b1.isClicked()){
+    //   System.out.println("\nButton Clicked");
+    //   currentScreen = level2World;
+    // }
   
   }
   
@@ -285,12 +298,6 @@ public void updateScreen(){
   // if(currentScreen == endScreen){
 
   // }
-
-  //UPDATE: Any Screen
-  if(doAnimation){
-    runningHorse.animateHorizontal(5.0, 10.0, true);
-  }
-
 
 }
 
@@ -318,14 +325,17 @@ public void populateSprites(){
 public void moveSprites(){
 
   //move zombies left in the level1Grid
-  if(currentScreen == level1Grid){
+  if(currentScreen == level1Grid)
+  {
     //Loop through all of the rows & cols in the grid
-    for(int r=0; r <level1Grid.getNumRows();r++){
-      for(int c = 1; c<level1Grid.getNumCols();c++){
-        
+    for(int r = 0; r <level1Grid.getNumRows(); r++)
+    {
+      for(int c = 1; c < level1Grid.getNumCols(); c++)
+      {
         GridLocation loc = new GridLocation(r,c);        //Store the current GridLocation
 
-        if(level1Grid.getTileImage(loc) == enemy    ){
+        if(level1Grid.getTileImage(loc) == enemy)
+        {
           level1Grid.clearTileImage(loc);
           GridLocation leftLoc = new GridLocation(r,c-1);  //Store the next GridLocation
           level1Grid.setTileImage(leftLoc, enemy);
@@ -369,8 +379,9 @@ public boolean isGameOver(){
 //method to describe what happens after the game is over
 public void endGame(){
     System.out.println("Game Over!");
-
+  
     //Update the title bar
+    surface.setTitle(titleText + "    " + "GAME OVER! You Killed " + zombieKill + " zombies!" );
 
     //Show any end imagery
     currentScreen = endScreen;
